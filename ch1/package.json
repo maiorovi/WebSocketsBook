@@ -1,0 +1,25 @@
+{
+  "name": "ch1",
+  "version": "1.0.0",
+  "description": "first chapter from websockets book",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/maiorovi/WebSocketsBook.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "egm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maiorovi/WebSocketsBook/issues"
+  },
+  "homepage": "https://github.com/maiorovi/WebSocketsBook#readme",
+  "dependencies": {
+    "ws": "^5.2.0"
+  }
+}
