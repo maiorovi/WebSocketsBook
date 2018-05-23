@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <title>Stock Chart over WebSocket</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://bit.ly/cdn-bootstrap-css">
+    <link rel="stylesheet" href="http://bit.ly/cdn-bootstrap-theme">
+    <script src="http://bit.ly/cdn-bootstrap-jq"></script>
+    <script type="application/javascript">
+    // code from chapter goes here
+    console.log('hello');
+
+    var stock_request = {stocks : ["AAPL", "MSFT", "AMZN", "GOOG", "YHOO"]};
+    var stocks = {
+    "AAPL": 0,
+    "MSFT": 0,
+    "GOOG": 0,
+    "YHOO": 0,
+    "AMZN": 0};
+
+    var ws = new WebSocket("ws://localhost:8181");
+
+    ws.onopen =  function(e) {
+    console.log('Connection established');
+    ws.send(JSON.stringify(stock_request));
+    };
+
+    var changeStockEntry = function(symbol, originalValue, newValue) {
+      var valElem = $('#' + symbol + ' span');
+      valElem.html(newValue.toFixed(2));
+
+      if(newValue < originalValue) {
+          valElem.addClass('label-danger');
+          valElem.removeClass('label-success');
+      } else if ( newValue > originalValue ) {
+          valElem.addClass('label-success');
+          valElem.removeClass('label-danger');
+      }
+    };
+
+    ws.onmessage = function(m) {
+        console.log(m);
+    let stocksData = JSON.parse(m.data);
+    // showPrices(stocks)
+        for(let symbol in stocksData) {
+            if(stocks.hasOwnProperty(symbol)) {
+                changeStockEntry(symbol, stocks[symbol], stocksData[symbol]);
+                stocks[symbol] = stocksData[symbol];
+            }
+        }
+    };
+
+    ws.onclose = function(e) {
+    console.log('Connection closed. '+ e.reason + ' ' + e.code);
+    };
+
+
+
+    // function showPrices(m) {
+    // ['AAPL', 'MSFT', 'GOOG', 'YHOO', 'AMZN']
+    // .forEach(function(elem) {
+    // let container = document.querySelector('#'+ elem);
+    // console.log(container);
+    // console.log(m[elem]);
+    // container.innerHTML = "<h3><span class=\"label label-default\">"+m[elem]+"</span></h3>"
+    // });
+    // }
+    </script>
+</head>
+<body lang="en">
+<div class="vertical-center">
+    <div class="container">
+
+        <h1>Stock Chart over WebSocket</h1>
+        <table class="table" id="stockTable">
+            <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody id="stockRows">
+            <tr>
+                <td><h3>AAPL</h3></td>
+                <td id="AAPL">
+                    <h3><span class="label label-default">95.00</span></h3>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>MSFT</h3></td>
+                <td id="MSFT">
+                    <h3><span class="label label-default">50.00</span></h3>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>AMZN</h3></td>
+                <td id="AMZN">
+                    <h3><span class="label label-default">300.00</span></h3>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>GOOG</h3></td>
+                <td id="GOOG">
+                    <h3><span class="label label-default">550.00</span></h3>
+                </td>
+            </tr>
+            <tr>
+                <td><h3>YHOO</h3></td>
+                <td id="YHOO">
+                    <h3><span class="label label-default">35.00</span></h3>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+</body></html>
